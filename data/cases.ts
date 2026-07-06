@@ -1,6 +1,9 @@
 import type { CaseStudy } from "@/types/simulator";
 
-export const cases: CaseStudy[] = [
+type BaseCase = Omit<CaseStudy, "clinicalImpression" | "ethicalFocus">;
+type CaseContext = Pick<CaseStudy, "clinicalImpression" | "ethicalFocus">;
+
+const baseCases: BaseCase[] = [
   {
     id: 1,
     topic: "Sınav kaygısı",
@@ -468,10 +471,10 @@ export const cases: CaseStudy[] = [
       },
       {
         id: "15b",
-        text: "Sakin ve doğrudan biçimde mevcut riski değerlendirir, yalnız bırakmaz; güvenlik planı için güvenilir yetişkinleri ve profesyonel desteği devreye alır, acil tehlikede acil yardıma yönlendiririm.",
+        text: "Sakin ve doğrudan biçimde mevcut riski değerlendirir, yalnız bırakmaz; güvenilir bir yetişkin ve ruh sağlığı profesyonelini sürece katar, acil tehlikede 112 veya en yakın acil servise yönlendiririm.",
         impact: { trust: 10, empathy: 9, ethics: 10, clinical: 10 },
         result: "Yaşadığı durum ciddiye alınır ve güvenlik sorumluluğu tek başına ona bırakılmaz.",
-        explanation: "Açıkça sormak riski artırmaz; güvenliği değerlendirmeye yardım eder. Yakın riskte kişi yalnız bırakılmamalı, yerel acil yardım ve uygun profesyonel destek devreye alınmalıdır.",
+        explanation: "Açık ve sakin biçimde sormak güvenliği değerlendirmeye yardım eder. Yakın riskte kişi yalnız bırakılmamalı; güvenilir yetişkin, ruh sağlığı profesyoneli ve gerektiğinde 112 ya da en yakın acil servis gecikmeden devreye alınmalıdır.",
       },
       {
         id: "15c",
@@ -483,3 +486,90 @@ export const cases: CaseStudy[] = [
     ],
   },
 ];
+
+const caseContexts: Record<number, CaseContext> = {
+  1: {
+    clinicalImpression: "Kaygı; bedensel belirtiler, performans düşünceleri ve aile beklentileriyle birlikte ele alınmalı.",
+    ethicalFocus: "Danışanın özerkliğini koruyarak aileyle iş birliği yapmak.",
+  },
+  2: {
+    clinicalImpression: "Kendi değerleri ile aile beklentileri arasındaki çatışma karar verme gücünü zorluyor.",
+    ethicalFocus: "Kişi adına karar vermeden özerk seçim alanını desteklemek.",
+  },
+  3: {
+    clinicalImpression: "Öfkenin altında anlaşılmama, sınır ve iletişim ihtiyaçları olabilir.",
+    ethicalFocus: "Duyguyu kabul ederken zarar veren davranışlara güvenli sınır koymak.",
+  },
+  4: {
+    clinicalImpression: "Değerlendirilme korkusu ve kaçınma döngüsü günlük işlevselliği daraltıyor.",
+    ethicalFocus: "Kişinin hızına ve onayına saygılı, kademeli adımlar planlamak.",
+  },
+  5: {
+    clinicalImpression: "Ekran kullanımı sosyal bağ kurma ihtiyacı ile uyku ve sorumlulukları aynı anda etkiliyor.",
+    ethicalFocus: "Cezalandırıcı olmadan gelişimsel sınırlar ve dijital güvenliği gözetmek.",
+  },
+  6: {
+    clinicalImpression: "Dışlanmanın duygusal etkisi ve tekrarlayan zorbalık olasılığı ayrı ayrı değerlendirilmeli.",
+    ethicalFocus: "Çocuğu suçlamadan güvenli yetişkin desteğine erişimini kolaylaştırmak.",
+  },
+  7: {
+    clinicalImpression: "Sert öz eleştiri ve karşılaştırma, denemeden vazgeçme örüntüsünü besliyor.",
+    ethicalFocus: "Genel övgü yerine kişinin kendi kanıtlarını ve kaynaklarını keşfetmesini desteklemek.",
+  },
+  8: {
+    clinicalImpression: "Sosyal karşılaştırma ve görünüş odaklı kaçınma, sosyal yaşamı sınırlamaya başlamış.",
+    ethicalFocus: "Görünüş normlarını dayatmadan, kapsayıcı ve yargısız bir dil kullanmak.",
+  },
+  9: {
+    clinicalImpression: "Mahremiyet ihlali ergen ile ebeveyn arasındaki güveni zedelemiş.",
+    ethicalFocus: "Mahremiyet hakkını ve güvenlik durumlarındaki gizlilik sınırlarını açıkça anlatmak.",
+  },
+  10: {
+    clinicalImpression: "Bedensel yakınmaların ardında kaygı, akran sorunu veya başka bir okul deneyimi olabilir.",
+    ethicalFocus: "Çocuğu zorlamadan dinlemek ve olası güvenlik riskini gecikmeden değerlendirmek.",
+  },
+  11: {
+    clinicalImpression: "Dikkat güçlüğü farklı ortamlar, uyku, kaygı ve öğrenme koşullarıyla birlikte incelenmeli.",
+    ethicalFocus: "Yeterli değerlendirme olmadan etiketleyici veya kesin ifadeler kullanmamak.",
+  },
+  12: {
+    clinicalImpression: "Yas dalgalı ilerliyor; hatırlatıcılar ve aile beklentileri duygusal yükü etkiliyor.",
+    ethicalFocus: "Yası tek bir süreye sıkıştırmadan kültürel ve kişisel farklılıklara saygı duymak.",
+  },
+  13: {
+    clinicalImpression: "Tekrarlayan ve dijital alana taşınan davranışlar güvenlik odaklı bir zorbalık değerlendirmesi gerektiriyor.",
+    ethicalFocus: "Sorumluluğu çocuğa yüklemeden okul ve güvenilir yetişkinleri şeffafça sürece katmak.",
+  },
+  14: {
+    clinicalImpression: "Çocuk sadakat çatışması ve yetişkinlerin kararlarına dair gereğinden büyük bir sorumluluk taşıyor.",
+    ethicalFocus: "Çocuğu aracı yapmamak ve iki ebeveyne dair duygularına tarafsız alan açmak.",
+  },
+  15: {
+    clinicalImpression: "Kendine zarar düşüncesi güvenlik değerlendirmesi ve gecikmeden destek ağı kurulmasını gerektirir.",
+    ethicalFocus: "Gizliliğin güvenlik sınırlarını açıklamak; kişiyi yalnız bırakmadan destek almak.",
+  },
+};
+
+const choiceReveals: Record<string, string> = {
+  "1a": "Aslında sınavdan çok, sonuç açıklanınca ailemin yüzüne bakamamaktan korkuyorum.",
+  "2b": "Ailemi kaybetmeden kendi hayatımı seçebileceğim bir yol var mı, onu merak ediyorum.",
+  "3a": "Öfkelenmeden hemen önce sanki kimse beni dinlemeyecekmiş gibi geliyor.",
+  "4c": "Sunuma sadece bir arkadaşımla prova yapmak daha mümkün hissettiriyor.",
+  "5a": "Gece telefonu bırakınca arkadaş grubunda konuşulanları kaçırmaktan korkuyorum.",
+  "6b": "Bu ilk kez olmadı; geçen hafta da teneffüste beni yanlarına çağırmadılar.",
+  "8a": "Fotoğrafı silince rahatlıyorum ama sonra kendime daha çok kızıyorum.",
+  "9c": "Annemle konuşmak istiyorum ama yine özelimi küçümsemesinden çekiniyorum.",
+  "10b": "Bir grup çocuk teneffüste çantamla uğraşıyor; öğretmene söylememem için beni korkutuyorlar.",
+  "11c": "Sessiz bir yerde ve kısa aralar verince ödevimi biraz daha kolay yapabiliyorum.",
+  "13c": "Videonun hâlâ grupta olmasından korkuyorum; yanımda biri olursa öğretmenle konuşabilirim.",
+  "15b": "Bunu tek başıma taşımak istemiyorum; güvendiğim bir yetişkini birlikte arayabiliriz.",
+};
+
+export const cases: CaseStudy[] = baseCases.map((caseStudy) => ({
+  ...caseStudy,
+  ...caseContexts[caseStudy.id],
+  choices: caseStudy.choices.map((choice) => ({
+    ...choice,
+    reveal: choiceReveals[choice.id],
+  })),
+}));

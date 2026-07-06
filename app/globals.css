@@ -28,11 +28,17 @@ button:focus-visible, textarea:focus-visible { outline: 2px solid #86bde8; outli
   .risk-tag { @apply inline-flex rounded-full border border-[#e4b77d]/20 bg-[#e4b77d]/10 px-3 py-1 text-[11px] font-bold text-[#efc793]; }
   .primary-button { @apply inline-flex min-h-12 items-center justify-center gap-3 rounded-2xl bg-mint px-6 py-3 text-sm font-bold text-ink shadow-[0_10px_30px_rgba(135,215,189,0.13)] transition duration-200 hover:-translate-y-0.5 hover:bg-[#a0e5ce] active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-40; }
   .secondary-button { @apply inline-flex min-h-12 items-center justify-center rounded-2xl border border-line bg-panel px-5 py-3 text-sm font-bold text-cream transition hover:border-sky/50 hover:bg-sky/[0.05] disabled:cursor-not-allowed disabled:opacity-35; }
-  .choice-button { @apply flex min-h-[4.5rem] w-full items-center gap-3 rounded-2xl border border-line bg-white/[0.025] p-3.5 text-left text-sm leading-6 text-slate-300 transition duration-200 hover:-translate-y-0.5 hover:border-mint/40 hover:bg-mint/[0.045] hover:text-cream sm:gap-4 sm:p-4 sm:text-[15px]; }
-  .choice-letter { @apply grid h-9 w-9 shrink-0 place-items-center rounded-xl border border-line bg-ink/50 text-xs font-bold text-slate-400 transition group-hover:border-mint/30 group-hover:text-mint; }
+  .choice-button { @apply flex min-h-[5.25rem] w-full items-center gap-3 rounded-2xl border border-line bg-white/[0.025] p-4 text-left text-[15px] leading-7 text-slate-200 transition duration-200 hover:-translate-y-0.5 hover:border-mint/40 hover:bg-mint/[0.045] hover:text-cream active:translate-y-0 sm:gap-4 sm:p-5; }
+  .choice-letter { @apply grid h-10 w-10 shrink-0 place-items-center rounded-xl border border-line bg-ink/50 text-xs font-bold text-slate-400 transition group-hover:border-mint/30 group-hover:text-mint; }
+  .atmosphere-card { @apply flex gap-3 rounded-2xl border border-line/70 bg-white/[0.025] p-4 text-xs leading-5 text-slate-400; }
+  .atmosphere-icon { @apply grid h-8 w-8 shrink-0 place-items-center rounded-xl border border-line bg-ink/40 text-sm; }
+  .atmosphere-title { @apply mb-1 text-[10px] font-bold uppercase tracking-[0.13em] text-slate-300; }
+  .reveal-card { @apply mt-4 rounded-2xl border border-[#e4b77d]/20 bg-gradient-to-br from-[#e4b77d]/[0.08] to-transparent p-5; }
 }
 
 @keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes soft-pulse { 0%, 100% { opacity: .55; transform: scale(.9); } 50% { opacity: 1; transform: scale(1); } }
 .animate-rise { animation: rise 420ms ease-out both; }
 .animate-rise-delayed { animation: rise 480ms 80ms ease-out both; }
+.animate-soft-pulse { animation: soft-pulse 1.8s ease-in-out infinite; }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; } }
