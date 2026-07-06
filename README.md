@@ -39,6 +39,8 @@ Bu dosyalar zorunlu değildir. Klinik arka planı bulunamazsa CSS ile oluşturul
 
 Yeni görseller aynı dosya adlarıyla ilgili klasörlere kopyalandığında kod değişikliği gerekmez. Farklı bir karakter görseli kullanmak için `data/characters.ts` içindeki `image` alanı güncellenebilir. Şeffaf arka planlı, dikey karakter PNG’leri önerilir.
 
+Arka plan ve karakter görsellerinin içine başlık, buton veya Türkçe metin gömülmemelidir. Tüm kullanıcı arayüzü metinleri okunabilirlik ve erişilebilirlik için HTML/CSS katmanında oluşturulur.
+
 ## Kurulum
 
 Gereksinimler:

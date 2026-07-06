@@ -29,20 +29,18 @@ export function CaseScreen({ caseStudy, metrics, current, total, onChoose }: Cas
         </div>
 
         <div className="dialog-stage-zone">
-          <DialogPanel caseStudy={caseStudy}>
-            <div className="mt-5 border-t border-white/10 pt-5">
-              <p className="eyebrow">Yaklaşımını seç</p>
-              <h2 className="mt-1 text-sm font-semibold text-slate-200">{caseStudy.prompt}</h2>
-              <div className="mt-4 space-y-2.5">
-                {caseStudy.choices.map((choice, index) => (
-                  <ChoiceButton key={choice.id} index={index} text={choice.text} onClick={() => onChoose(choice.id)} />
-                ))}
-              </div>
-            </div>
-          </DialogPanel>
+          <DialogPanel caseStudy={caseStudy}><p className="mt-4 text-sm font-medium text-slate-300">{caseStudy.prompt}</p></DialogPanel>
         </div>
       </div>
-      <div className="mx-auto w-full max-w-6xl px-4 pb-5 sm:px-6"><MetricHud metrics={metrics} /></div>
+      <section className="vn-bottom-zone" aria-label="Yaklaşım seçenekleri">
+        <p className="eyebrow mb-2">Yaklaşımını seç</p>
+        <div className="vn-bottom-choices">
+          {caseStudy.choices.map((choice, index) => (
+            <ChoiceButton key={choice.id} index={index} text={choice.text} onClick={() => onChoose(choice.id)} />
+          ))}
+        </div>
+        <MetricHud metrics={metrics} />
+      </section>
     </main>
   );
 }

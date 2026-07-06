@@ -23,7 +23,7 @@ export function FeedbackScreen({ caseStudy, choice, metrics, current, total, isL
 
   return (
     <main className="game-screen">
-      <GameHud current={current} total={total} metrics={metrics} label="Seans devam ediyor" />
+      <GameHud current={current} total={total} metrics={metrics} />
       <div className="visual-novel-stage feedback-stage">
         <div className="client-stage-zone">
           <ClientSprite
@@ -71,7 +71,7 @@ export function FeedbackScreen({ caseStudy, choice, metrics, current, total, isL
           </button>
         </section>
       </div>
-      <div className="mx-auto w-full max-w-6xl px-4 pb-5 sm:px-6"><MetricHud metrics={metrics} /></div>
+      <div className="vn-feedback-bottom"><MetricHud metrics={metrics} /></div>
     </main>
   );
 }

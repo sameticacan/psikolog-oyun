@@ -12,10 +12,13 @@ export function DialogPanel({ caseStudy, children }: { caseStudy: CaseStudy; chi
       <p className="eyebrow mt-5 text-sky">Danışan anlatımı</p>
       <h1 className="mt-2 text-2xl font-semibold tracking-tight text-cream">{caseStudy.title}</h1>
       <blockquote className="dialog-quote">“{caseStudy.narrative}”</blockquote>
-      <div className="mt-4 grid gap-2 sm:grid-cols-2">
-        <div className="dialog-clue"><span>◎</span><div><strong>İlk klinik izlenim</strong><p>{caseStudy.clinicalImpression}</p></div></div>
-        <div className="dialog-clue"><span>◇</span><div><strong>Etik odak</strong><p>{caseStudy.ethicalFocus}</p></div></div>
-      </div>
+      <details className="vn-dialog-details">
+        <summary>Seans ayrıntıları <span>İzlenim ve etik odak</span></summary>
+        <div className="grid gap-2 pt-2 sm:grid-cols-2">
+          <div className="dialog-clue"><span>◎</span><div><strong>İlk klinik izlenim</strong><p>{caseStudy.clinicalImpression}</p></div></div>
+          <div className="dialog-clue"><span>◇</span><div><strong>Etik odak</strong><p>{caseStudy.ethicalFocus}</p></div></div>
+        </div>
+      </details>
       {children}
     </section>
   );
