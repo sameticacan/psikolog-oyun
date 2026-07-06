@@ -140,9 +140,11 @@ export function Simulator() {
       {screen === "case" && <CaseScreen caseStudy={activeCase} metrics={metrics} current={caseIndex + 1} total={sessionCases.length} onChoose={chooseApproach} />}
       {screen === "feedback" && selectedChoice && <FeedbackScreen caseStudy={activeCase} choice={selectedChoice} metrics={metrics} current={caseIndex + 1} total={sessionCases.length} isLast={caseIndex === sessionCases.length - 1} onNext={goNext} />}
       {screen === "final" && <FinalScreen metrics={metrics} bestScore={bestScore ?? calculateScore(metrics)} completedCases={completedCases} completedSessions={completedSessions} reflection={reflection} reflectionSaved={reflectionSaved} onReflectionChange={updateReflection} onSaveReflection={saveReflection} onRestart={startSimulation} />}
-      <footer className="mx-auto w-full max-w-5xl px-5 pb-7 pt-2 text-center text-[11px] leading-5 text-slate-500 sm:px-8 sm:text-xs">
-        Bu simülasyon bilgilendirme ve eğitim amacı taşır. Gerçek psikolojik değerlendirme, tanı veya terapi yerine geçmez.
-      </footer>
+      {(screen === "welcome" || screen === "final") && (
+        <footer className="mx-auto w-full max-w-5xl shrink-0 px-5 pb-3 pt-2 text-center text-[10px] leading-4 text-slate-500 sm:px-8">
+          Bu simülasyon bilgilendirme ve eğitim amacı taşır. Gerçek psikolojik değerlendirme, tanı veya terapi yerine geçmez.
+        </footer>
+      )}
     </GameShell>
   );
 }

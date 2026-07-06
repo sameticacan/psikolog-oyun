@@ -10,7 +10,7 @@ interface WelcomeScreenProps {
 
 export function WelcomeScreen({ bestScore, lastBadge, completedCases, completedSessions, onStart }: WelcomeScreenProps) {
   return (
-    <main className="mx-auto flex w-full max-w-5xl flex-1 items-center px-5 pb-10 sm:px-8">
+    <main className="mx-auto flex min-h-0 w-full max-w-5xl flex-1 items-center overflow-y-auto px-5 pb-10 sm:px-8">
       <div className="grid w-full items-center gap-8 lg:grid-cols-[1.15fr_0.85fr] lg:gap-14">
         <section className="animate-rise">
           <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-mint/20 bg-mint/10 px-3 py-1.5 text-xs font-semibold text-mint">

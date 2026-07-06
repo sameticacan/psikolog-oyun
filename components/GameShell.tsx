@@ -5,7 +5,7 @@ export function GameShell({ children }: { children: ReactNode }) {
   return (
     <div className="game-shell">
       <ClinicBackground />
-      <div className="relative z-10 flex min-h-screen flex-col">{children}</div>
+      <div className="relative z-10 flex h-full min-h-0 flex-col overflow-hidden">{children}</div>
     </div>
   );
 }

@@ -41,6 +41,8 @@ Yeni görseller aynı dosya adlarıyla ilgili klasörlere kopyalandığında kod
 
 Arka plan ve karakter görsellerinin içine başlık, buton veya Türkçe metin gömülmemelidir. Tüm kullanıcı arayüzü metinleri okunabilirlik ve erişilebilirlik için HTML/CSS katmanında oluşturulur.
 
+Oyun ekranı tek viewport düzenindedir; ana sayfa scrollbar’ı kapatılmıştır. Uzun vaka ve geri bildirim içerikleri gerektiğinde yalnızca ilgili cam panelin içinde sınırlı olarak kayar.
+
 ## Kurulum
 
 Gereksinimler:
