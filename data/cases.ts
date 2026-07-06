@@ -1,6 +1,14 @@
 import type { CaseStudy } from "@/types/simulator";
+import { characterProfiles } from "./characters";
 
-export const cases: CaseStudy[] = [
+type CharacterFields =
+  | "characterId"
+  | "characterName"
+  | "characterAgeGroup"
+  | "characterEmotion"
+  | "characterImage";
+
+const baseCases: Omit<CaseStudy, CharacterFields>[] = [
   {
     id: 1,
     topic: "Sınav kaygısı",
@@ -521,3 +529,15 @@ export const cases: CaseStudy[] = [
     ],
   },
 ];
+
+export const cases: CaseStudy[] = baseCases.map((caseStudy) => {
+  const character = characterProfiles[caseStudy.id];
+  return {
+    ...caseStudy,
+    characterId: character.id,
+    characterName: character.name,
+    characterAgeGroup: character.ageGroup,
+    characterEmotion: character.emotion,
+    characterImage: character.image,
+  };
+});

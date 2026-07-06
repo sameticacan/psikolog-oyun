@@ -6,6 +6,8 @@ import { ScoreBoard } from "./ScoreBoard";
 interface FinalScreenProps {
   metrics: Metrics;
   bestScore: number;
+  completedCases: number;
+  completedSessions: number;
   reflection: string;
   reflectionSaved: boolean;
   onReflectionChange: (value: string) => void;
@@ -13,18 +15,24 @@ interface FinalScreenProps {
   onRestart: () => void;
 }
 
-export function FinalScreen({ metrics, bestScore, reflection, reflectionSaved, onReflectionChange, onSaveReflection, onRestart }: FinalScreenProps) {
+export function FinalScreen({ metrics, bestScore, completedCases, completedSessions, reflection, reflectionSaved, onReflectionChange, onSaveReflection, onRestart }: FinalScreenProps) {
   const profile = getResultProfile(metrics);
 
   return (
-    <main className="mx-auto w-full max-w-4xl flex-1 px-5 pb-12 sm:px-8">
-      <section className="glass-card animate-rise overflow-hidden">
+    <main className="game-final-screen">
+      <section className="final-game-panel animate-rise overflow-hidden">
         <div className="border-b border-line/80 p-6 text-center sm:p-9">
           <div className="mx-auto grid h-16 w-16 place-items-center rounded-full border border-mint/25 bg-mint/10 text-2xl text-mint">✦</div>
           <p className="eyebrow mt-5">Oturum tamamlandı</p>
           <h1 className="mt-2 text-3xl font-semibold tracking-tight text-cream sm:text-4xl">Yaklaşım puanın {profile.score}</h1>
           <p className="mx-auto mt-3 max-w-lg text-sm leading-6 text-slate-400">Bu puan bir yeterlilik ölçümü değil; seçimlerinin dört eğitimsel boyuttaki yansımasıdır.</p>
           {profile.score >= bestScore && <span className="mt-4 inline-flex rounded-full border border-sky/20 bg-sky/10 px-3 py-1 text-xs font-semibold text-sky">Yeni en iyi sonucun</span>}
+          <div className="mx-auto mt-5 flex max-w-xl flex-wrap justify-center gap-2">
+            <span className="final-stat"><small>En iyi skor</small><strong>{bestScore}</strong></span>
+            <span className="final-stat"><small>Son rozet</small><strong>{profile.badge}</strong></span>
+            <span className="final-stat"><small>Tamamlanan vaka</small><strong>{completedCases}</strong></span>
+            <span className="final-stat"><small>Oturum</small><strong>{completedSessions}</strong></span>
+          </div>
         </div>
 
         <div className="grid gap-7 p-5 sm:p-8 lg:grid-cols-2">

@@ -1,6 +1,6 @@
 # Terapi Odası: Mini Vaka Simülatörü
 
-Türkçe, mobil öncelikli ve psikoloji temalı eğitici bir mini karar simülasyonu. Oyuncu çocuk, ergen ve genç yetişkin alanından 15 kısa vakayı okur; üç yaklaşım arasından seçim yapar ve seçimin güven, empati, etik duruş ile klinik uygunluk üzerindeki eğitimsel yansımasını görür.
+Türkçe, mobil öncelikli ve psikoloji temalı eğitici bir mini karar simülasyonu. Visual novel tarzındaki gece kliniği sahnesinde 2D danışan karakterleriyle karşılaşır; üç yaklaşım arasından seçim yapar ve seçimin güven, empati, etik duruş ile klinik uygunluk üzerindeki eğitimsel yansımasını görür.
 
 ## Etik not
 
@@ -20,6 +20,24 @@ Uygulama terapi hizmeti sunmaz ve kişiye özel psikolojik yönlendirme üretmez
 - Kişiselleştirilmiş güçlü alan, gelişime açık alan, yaklaşım tarzı ve öğrenme özeti
 - En iyi skor, son rozet, tamamlanan vaka/oturum sayısı ve yansıtma metni için localStorage desteği
 - Mobil uyumlu, erişilebilir ve azaltılmış hareket tercihine duyarlı arayüz
+- Gece kliniği atmosferine sahip visual novel sahnesi ve karakter tepkileri
+- Opsiyonel PNG karakter/arka plan asset’leri için otomatik SVG ve CSS fallback sistemi
+
+## Görsel asset sistemi
+
+Uygulama aşağıdaki dosya yollarını otomatik olarak kullanır:
+
+```text
+public/backgrounds/therapy-room-night.png
+public/characters/client-teen-anxious.png
+public/characters/client-young-adult-tired.png
+public/characters/client-child-worried.png
+public/characters/client-parent-stressed.png
+```
+
+Bu dosyalar zorunlu değildir. Klinik arka planı bulunamazsa CSS ile oluşturulan pencere, gece şehir ışıkları, kitaplık, lamba, bitki, koltuk ve sehpa sahnesi görünür. Karakter PNG’si yüklenemezse vaka yaş grubu ile duygu durumuna göre renklendirilen yarım vücut SVG portresi otomatik devreye girer.
+
+Yeni görseller aynı dosya adlarıyla ilgili klasörlere kopyalandığında kod değişikliği gerekmez. Farklı bir karakter görseli kullanmak için `data/characters.ts` içindeki `image` alanı güncellenebilir. Şeffaf arka planlı, dikey karakter PNG’leri önerilir.
 
 ## Kurulum
 
@@ -63,7 +81,11 @@ npm run lint
 app/                 Next.js sayfa ve global stiller
 components/          Simülasyon ekranları ve arayüz bileşenleri
 data/cases.ts        Vaka, seçenek, atmosfer ve ek bilgi verileri
+data/characters.ts   Vaka-karakter eşlemeleri ve opsiyonel asset yolları
 lib/results.ts       Puan, rozet, bağ ve final değerlendirme hesapları
+lib/session.ts       Oturum karıştırma ve risk vakası konumlandırması
+public/backgrounds/  Opsiyonel klinik arka planları
+public/characters/   Opsiyonel 2D danışan sprite’ları
 types/simulator.ts   Ortak TypeScript tipleri
 ```
 

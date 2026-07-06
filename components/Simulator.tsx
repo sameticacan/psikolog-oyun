@@ -9,6 +9,7 @@ import { AppHeader } from "./AppHeader";
 import { CaseScreen } from "./CaseScreen";
 import { FeedbackScreen } from "./FeedbackScreen";
 import { FinalScreen } from "./FinalScreen";
+import { GameShell } from "./GameShell";
 import { WelcomeScreen } from "./WelcomeScreen";
 
 const INITIAL_METRICS: Metrics = { trust: 50, empathy: 50, ethics: 50, clinical: 50 };
@@ -130,19 +131,18 @@ export function Simulator() {
     setReflectionSaved(false);
   };
 
-  const showProgress = screen === "case" || screen === "feedback";
   const activeCase = sessionCases[caseIndex];
 
   return (
-    <div className="app-shell">
-      <AppHeader step={showProgress ? caseIndex + 1 : undefined} total={showProgress ? sessionCases.length : undefined} />
+    <GameShell>
+      {screen === "welcome" && <AppHeader />}
       {screen === "welcome" && <WelcomeScreen bestScore={bestScore} lastBadge={lastBadge} completedCases={completedCases} completedSessions={completedSessions} onStart={startSimulation} />}
-      {screen === "case" && <CaseScreen caseStudy={activeCase} metrics={metrics} onChoose={chooseApproach} />}
-      {screen === "feedback" && selectedChoice && <FeedbackScreen caseStudy={activeCase} choice={selectedChoice} metrics={metrics} isLast={caseIndex === sessionCases.length - 1} onNext={goNext} />}
-      {screen === "final" && <FinalScreen metrics={metrics} bestScore={bestScore ?? calculateScore(metrics)} reflection={reflection} reflectionSaved={reflectionSaved} onReflectionChange={updateReflection} onSaveReflection={saveReflection} onRestart={startSimulation} />}
+      {screen === "case" && <CaseScreen caseStudy={activeCase} metrics={metrics} current={caseIndex + 1} total={sessionCases.length} onChoose={chooseApproach} />}
+      {screen === "feedback" && selectedChoice && <FeedbackScreen caseStudy={activeCase} choice={selectedChoice} metrics={metrics} current={caseIndex + 1} total={sessionCases.length} isLast={caseIndex === sessionCases.length - 1} onNext={goNext} />}
+      {screen === "final" && <FinalScreen metrics={metrics} bestScore={bestScore ?? calculateScore(metrics)} completedCases={completedCases} completedSessions={completedSessions} reflection={reflection} reflectionSaved={reflectionSaved} onReflectionChange={updateReflection} onSaveReflection={saveReflection} onRestart={startSimulation} />}
       <footer className="mx-auto w-full max-w-5xl px-5 pb-7 pt-2 text-center text-[11px] leading-5 text-slate-500 sm:px-8 sm:text-xs">
         Bu simülasyon bilgilendirme ve eğitim amacı taşır. Gerçek psikolojik değerlendirme, tanı veya terapi yerine geçmez.
       </footer>
-    </div>
+    </GameShell>
   );
 }
