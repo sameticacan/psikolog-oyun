@@ -4,16 +4,17 @@ interface WelcomeScreenProps {
   bestScore: number | null;
   lastBadge: BadgeName | null;
   completedCases: number;
+  completedSessions: number;
   onStart: () => void;
 }
 
-export function WelcomeScreen({ bestScore, lastBadge, completedCases, onStart }: WelcomeScreenProps) {
+export function WelcomeScreen({ bestScore, lastBadge, completedCases, completedSessions, onStart }: WelcomeScreenProps) {
   return (
     <main className="mx-auto flex w-full max-w-5xl flex-1 items-center px-5 pb-10 sm:px-8">
       <div className="grid w-full items-center gap-8 lg:grid-cols-[1.15fr_0.85fr] lg:gap-14">
         <section className="animate-rise">
           <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-mint/20 bg-mint/10 px-3 py-1.5 text-xs font-semibold text-mint">
-            <span className="h-1.5 w-1.5 rounded-full bg-mint" />15 kısa vaka · yaklaşık 12 dakika
+            <span className="h-1.5 w-1.5 rounded-full bg-mint" />Her oturum 10 vaka · yaklaşık 8 dakika
           </div>
           <h1 className="max-w-3xl text-balance text-4xl font-semibold leading-[1.08] tracking-[-0.035em] text-cream sm:text-5xl lg:text-6xl">
             Bir yanıt seç. Bağı kur. Hikâyenin değişimini izle.
@@ -28,10 +29,11 @@ export function WelcomeScreen({ bestScore, lastBadge, completedCases, onStart }:
             <button className="primary-button" onClick={onStart}>Simülasyona Başla <span aria-hidden="true">→</span></button>
             {bestScore !== null && <div className="px-2 py-2 text-sm text-slate-400">En iyi sonuç <span className="font-bold text-sky">{bestScore}/100</span></div>}
           </div>
-          {(lastBadge || completedCases > 0) && (
+          {(lastBadge || completedCases > 0 || completedSessions > 0) && (
             <div className="mt-5 flex flex-wrap gap-2 text-xs">
               {lastBadge && <span className="rounded-full border border-mint/20 bg-mint/[0.06] px-3 py-1.5 text-mint">Son rozet · {lastBadge}</span>}
               <span className="rounded-full border border-line bg-panel/60 px-3 py-1.5 text-slate-300">Toplam {completedCases} vaka tamamlandı</span>
+              <span className="rounded-full border border-line bg-panel/60 px-3 py-1.5 text-slate-300">{completedSessions} oturum tamamlandı</span>
             </div>
           )}
         </section>

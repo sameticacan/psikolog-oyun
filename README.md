@@ -10,14 +10,15 @@ Uygulama terapi hizmeti sunmaz ve kişiye özel psikolojik yönlendirme üretmez
 
 ## Özellikler
 
-- Çocuk, ergen ve genç yetişkin alanından 15 vaka ve 45 yaklaşım seçeneği
+- Çocuk, ergen ve genç yetişkin alanından 15 vakalık havuz ve 45 nüanslı yaklaşım seçeneği
+- Her başlangıçta karıştırılan 10 vakalık oturumlar; seçilen risk vakasının son iki sıraya güvenli biçimde yerleştirilmesi
 - Güven, empati, etik duruş ve klinik uygunluk göstergeleri
 - Her seçimden sonra danışanla bağ ilerlemesi ve psikoeğitici açıklama
 - Bazı seçimlerde danışanın anlatısını genişleten ek bilgi kartları
 - Vaka bazında ilk klinik izlenim ve dikkat edilmesi gereken etik nokta
 - Beş sonuç rozeti: Etik Pusula, Empati Ustası, Klinik Düşünür, Güven İnşa Eden ve Denge Arayan
 - Kişiselleştirilmiş güçlü alan, gelişime açık alan, yaklaşım tarzı ve öğrenme özeti
-- En iyi skor, son rozet, tamamlanan vaka sayısı ve yansıtma metni için localStorage desteği
+- En iyi skor, son rozet, tamamlanan vaka/oturum sayısı ve yansıtma metni için localStorage desteği
 - Mobil uyumlu, erişilebilir ve azaltılmış hareket tercihine duyarlı arayüz
 
 ## Kurulum
