@@ -88,15 +88,23 @@ async function inspect(name, width, height, port) {
     await delay(220);
     const positionAfterUnlockedKey = await send("Runtime.evaluate", { returnByValue: true, expression: `document.querySelector('.player-avatar')?.dataset.playerX` });
     const positionBeforeTap = await send("Runtime.evaluate", { returnByValue: true, expression: `document.querySelector('.player-avatar')?.dataset.playerX` });
-    await send("Runtime.evaluate", { expression: `(() => { const room = document.querySelector('.office-room'); const rect = room.getBoundingClientRect(); room.dispatchEvent(new PointerEvent('pointerdown', { clientX: rect.left + rect.width * .31, clientY: rect.top + rect.height * .82, button: 0, bubbles: true, pointerType: 'touch' })); })()` });
+    await send("Runtime.evaluate", { expression: `(() => { const room = document.querySelector('.office-room'); const rect = room.getBoundingClientRect(); room.dispatchEvent(new PointerEvent('pointerdown', { clientX: rect.left + rect.width * .58, clientY: rect.top + rect.height * .72, button: 0, bubbles: true, pointerType: 'touch' })); })()` });
     await delay(220);
     const positionAfterTap = await send("Runtime.evaluate", { returnByValue: true, expression: `document.querySelector('.player-avatar')?.dataset.playerX` });
+    const blockedClickSnapped = await send("Runtime.evaluate", { returnByValue: true, expression: `(() => { const player = document.querySelector('.player-avatar'); const x = Number(player?.dataset.playerX); const y = Number(player?.dataset.playerY); return !(x >= 38 && x <= 78 && y >= 61 && y <= 83); })()` });
 
+    let clientEntrySeen = false;
+    let sessionVisible = false;
     for (let attempt = 0; attempt < 4; attempt += 1) {
       await send("Runtime.evaluate", { expression: `Array.from(document.querySelectorAll('button')).find((button) => button.textContent.includes('Kapıya git') && !button.disabled)?.click()` });
-      await delay(1150);
-      const sessionCheck = await send("Runtime.evaluate", { returnByValue: true, expression: `Boolean(document.querySelector('.vn-choice'))` });
-      if (sessionCheck.result.value) break;
+      for (let tick = 0; tick < 36; tick += 1) {
+        await delay(100);
+        const phase = await send("Runtime.evaluate", { returnByValue: true, expression: `({ welcoming: Boolean(document.querySelector('.interaction-status.welcoming')), session: Boolean(document.querySelector('.vn-choice')) })` });
+        clientEntrySeen ||= phase.result.value.welcoming;
+        sessionVisible = phase.result.value.session;
+        if (sessionVisible) break;
+      }
+      if (sessionVisible) break;
     }
     const session = await send("Runtime.evaluate", { returnByValue: true, expression: `Boolean(document.querySelector('.vn-choice'))` });
     await send("Runtime.evaluate", { expression: `document.querySelector('.vn-choice')?.click()` });
@@ -119,8 +127,16 @@ async function inspect(name, width, height, port) {
       returnByValue: true,
       expression: `(() => { const office = document.querySelector('.office-game-screen'); return { queueAfterReload: office?.dataset.queueSignature || '', queueDayAfterReload: Number(office?.dataset.queueDay || 0) }; })()`,
     });
+    await send("Runtime.evaluate", { expression: `Array.from(document.querySelectorAll('button')).find((button) => button.textContent.includes('Asistan'))?.click()` });
+    await delay(900);
+    const managementLayer = await send("Runtime.evaluate", { returnByValue: true, expression: `(() => { const screen = document.querySelector('.management-screen'); if (!screen) return { visible: false, zIndex: 0, opaque: false }; const style = getComputedStyle(screen); return { visible: true, zIndex: Number(style.zIndex), opaque: style.backgroundImage !== 'none' || style.backgroundColor !== 'rgba(0, 0, 0, 0)' }; })()` });
+    await send("Runtime.evaluate", { expression: `Array.from(document.querySelectorAll('button')).find((button) => button.textContent.includes('Ofise dön'))?.click()` });
+    await delay(250);
+    await send("Runtime.evaluate", { expression: `Array.from(document.querySelectorAll('button')).find((button) => button.textContent.includes('Günü bitir'))?.click()` });
+    await delay(600);
+    const dayEndConfirm = await send("Runtime.evaluate", { returnByValue: true, expression: `Boolean(document.querySelector('.end-day-confirm'))` });
     socket.close();
-    return { name, ...JSON.parse(evaluated.result.value), movement: { initial: initialPlayer.result.value, startedBeforeAction: movementStarted.result.value, scheduleOpenedAfterArrival: scheduleOpened.result.value, modalLockedKeyboard: positionBeforeLockedKey.result.value === positionAfterLockedKey.result.value, modalBlockedHotspot: modalBlockedHotspot.result.value, keyboardMovedAfterClose: Number(positionAfterUnlockedKey.result.value) > Number(positionAfterLockedKey.result.value), sceneTapMoved: positionBeforeTap.result.value !== positionAfterTap.result.value }, flow: { session: session.result.value, feedback: feedback.result.value, final: final.result.value, ...persisted.result.value, ...restoredQueue.result.value }, screenshotPath };
+    return { name, ...JSON.parse(evaluated.result.value), movement: { initial: initialPlayer.result.value, startedBeforeAction: movementStarted.result.value, scheduleOpenedAfterArrival: scheduleOpened.result.value, modalLockedKeyboard: positionBeforeLockedKey.result.value === positionAfterLockedKey.result.value, modalBlockedHotspot: modalBlockedHotspot.result.value, keyboardMovedAfterClose: Number(positionAfterUnlockedKey.result.value) > Number(positionAfterLockedKey.result.value), sceneTapMoved: positionBeforeTap.result.value !== positionAfterTap.result.value, blockedClickSnapped: blockedClickSnapped.result.value, clientEntrySeen }, management: { ...managementLayer.result.value, dayEndConfirm: dayEndConfirm.result.value }, flow: { session: session.result.value, feedback: feedback.result.value, final: final.result.value, ...persisted.result.value, ...restoredQueue.result.value }, screenshotPath };
   } finally {
     browser.kill();
   }
@@ -132,6 +148,6 @@ results.push(await inspect("desktop-1920", 1920, 1080, 9332));
 results.push(await inspect("mobile", 390, 844, 9333));
 console.log(JSON.stringify(results, null, 2));
 
-if (results.some((result) => result.horizontalOverflow || !result.officeVisible || result.hotspotCount !== 6 || !result.movement.startedBeforeAction || !result.movement.scheduleOpenedAfterArrival || !result.movement.modalLockedKeyboard || !result.movement.modalBlockedHotspot || !result.movement.keyboardMovedAfterClose || !result.movement.sceneTapMoved || !result.flow.session || !result.flow.feedback || !result.flow.final || !result.flow.officeReturned || result.flow.totalSessions !== 1 || result.flow.storageVersion !== 2 || result.flow.queueBeforeReload !== result.flow.queueAfterReload || result.flow.queueDayAfterReload !== 1)) {
+if (results.some((result) => result.horizontalOverflow || !result.officeVisible || result.hotspotCount !== 6 || !result.movement.startedBeforeAction || !result.movement.scheduleOpenedAfterArrival || !result.movement.modalLockedKeyboard || !result.movement.modalBlockedHotspot || !result.movement.keyboardMovedAfterClose || !result.movement.sceneTapMoved || !result.movement.blockedClickSnapped || !result.movement.clientEntrySeen || !result.management.visible || result.management.zIndex < 220 || !result.management.opaque || !result.management.dayEndConfirm || !result.flow.session || !result.flow.feedback || !result.flow.final || !result.flow.officeReturned || result.flow.totalSessions !== 1 || result.flow.storageVersion !== 2 || result.flow.queueBeforeReload !== result.flow.queueAfterReload || result.flow.queueDayAfterReload !== 1)) {
   process.exitCode = 1;
 }

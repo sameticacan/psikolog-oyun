@@ -7,6 +7,7 @@ import type { OfficeInteractionTarget, PlayerFacing, PlayerPosition } from "@/ty
 import { InteractionTargetMarker } from "./InteractionTargetMarker";
 import { OfficeHotspot } from "./OfficeHotspot";
 import { PlayerAvatar } from "./PlayerAvatar";
+import { WaitingClientAvatar } from "./WaitingClientAvatar";
 
 interface OfficeRoomProps {
   state: OfficeState;
@@ -18,11 +19,12 @@ interface OfficeRoomProps {
   isWalking: boolean;
   transitionMs: number;
   pendingTargetId: OfficeInteractionTarget["id"] | null;
+  isWelcomingClient: boolean;
   onMove: (position: PlayerPosition) => void;
   onInteract: (target: OfficeInteractionTarget) => void;
 }
 
-export function OfficeRoom({ state, queue, interactionTargets, playerPosition, targetPosition, facing, isWalking, transitionMs, pendingTargetId, onMove, onInteract }: OfficeRoomProps) {
+export function OfficeRoom({ state, queue, interactionTargets, playerPosition, targetPosition, facing, isWalking, transitionMs, pendingTargetId, isWelcomingClient, onMove, onInteract }: OfficeRoomProps) {
   const nextClient = queue.find((client) => client.status === "waiting");
   const has = (id: string) => state.purchasedUpgrades.includes(id);
   const [hoveredTargetId, setHoveredTargetId] = useState<OfficeInteractionTarget["id"] | null>(null);
@@ -42,20 +44,22 @@ export function OfficeRoom({ state, queue, interactionTargets, playerPosition, t
         <div className="office-clock">21:10</div>
         <div className="office-baseboard" />
       </div>
-      <div className={`office-books ${has("library") ? "upgraded" : ""}`}><i /><i /><i /><i /><i /><i /></div>
+      <div className={`office-books ${has("library") ? "upgraded" : ""}`}><span className="bookshelf-top" /><span className="bookshelf-side" /><i /><i /><i /><i /><i /><i /></div>
       <div className="office-rug"><i /></div>
+      <div className="office-desk-shadow" />
       <div className="office-desk">
+        <div className="office-desk-top" /><div className="office-desk-front" />
         <div className="office-monitor"><span>RANDEVU<br /><b>{queue.filter((c) => c.status === "waiting").length} BEKLİYOR</b></span></div>
         <div className="desk-lamp" /><div className="desk-notebook" /><div className="desk-mug" /><div className="desk-drawer"><i /><i /></div>
       </div>
-      <div className={`client-chair ${has("comfort-chair") ? "upgraded" : ""}`}><i /></div>
+      <div className={`client-chair ${has("comfort-chair") ? "upgraded" : ""}`}><span className="client-chair-back" /><span className="client-chair-seat" /><i /></div>
       <div className={`waiting-seats ${has("waiting-area") ? "upgraded" : ""}`}><i /><i /></div>
       <div className="office-side-table"><span /><i /></div>
-      {nextClient && <div className="waiting-client" aria-hidden="true"><i /><span /></div>}
+      {nextClient && <WaitingClientAvatar caseStudy={nextClient.caseStudy} entering={isWelcomingClient} />}
       {has("plants") && <div className="office-scene-plant"><i /><i /><i /><b /></div>}
       {has("online-kit") && <div className="office-online-kit">●</div>}
       {has("soundproofing") && <div className="office-soundproof"><i /><i /><i /></div>}
-      <div className="office-door"><i className="door-panel" /><span>{nextClient ? "DANIŞAN BEKLİYOR" : "BUGÜN TAMAM"}</span></div>
+      <div className={`office-door ${isWelcomingClient ? "is-welcoming" : ""}`}><b className="door-depth" /><i className="door-panel" /><span>{nextClient ? "DANIŞAN BEKLİYOR" : "BUGÜN TAMAM"}</span></div>
       <div className="office-floor-light" /><div className="office-vignette" />
 
       {hoveredTarget && !targetPosition && <InteractionTargetMarker position={clampPlayerPosition(hoveredTarget.position)} label={hoveredTarget.label} />}

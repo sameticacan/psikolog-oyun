@@ -15,7 +15,7 @@ export function PlayerAvatar({ position, facing, isWalking, transitionMs }: Play
   return (
     <div
       className={`player-avatar ${isWalking ? "is-walking" : "is-idle"}`}
-      style={{ left: `${position.x}%`, top: `${position.y}%`, zIndex: Math.round(20 + position.y), transitionDuration: `${transitionMs}ms` }}
+      style={{ left: `${position.x}%`, top: `${position.y}%`, zIndex: Math.round(40 + position.y), transitionDuration: `${transitionMs}ms` }}
       data-player-x={position.x.toFixed(1)}
       data-player-y={position.y.toFixed(1)}
       data-player-walking={isWalking ? "true" : "false"}
@@ -50,4 +50,3 @@ export function PlayerAvatar({ position, facing, isWalking, transitionMs }: Play
     </div>
   );
 }
-

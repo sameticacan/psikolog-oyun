@@ -52,9 +52,11 @@ Oyun ekranı tek viewport düzenindedir; ana sayfa scrollbar’ı kapatılmışt
 
 ## Gezilebilir ofis hub'ı
 
-Ofis sahnesinde zemine tıklayarak veya mobilde dokunarak psikolog avatarını hedef noktaya yürütebilirsiniz. Masaüstünde `WASD` ve ok tuşları da desteklenir. Hareket alanı ofis zeminiyle sınırlandırılır; avatar mobilyaların önünden ve arkasından geçerken zemin konumuna göre katmanlanır.
+Ofis artık gezilebilir bir 2.5D hub olarak çalışır. Sahne zeminine tıklayarak veya mobilde dokunarak psikolog avatarını hedef noktaya yürütebilirsiniz. Masaüstünde `WASD` ve ok tuşları da desteklenir. Masa, koltuk, kitaplık, bekleme mobilyaları ve bitkiler çarpışma bölgelerine sahiptir; engelli bir noktaya tıklandığında avatar en yakın yürünebilir zemine yönelir ve gerektiğinde mobilyanın çevresinden waypoint rotası izler.
 
 Kapı, bilgisayar, masa, kitaplık, bekleme alanı ve resepsiyon artık menüyü doğrudan açmaz. Avatar hedef halkasına yürür ve aksiyon varıştan sonra çalışır. Hedef yakındaysa etkileşim anında gerçekleşir. Modal veya panel açıkken hareket ve yeni hotspot aksiyonları kilitlenir.
+
+Sıradaki danışan, yaş grubu ve duygu durumuna göre farklılaşan küçük bir SVG avatarla bekleme alanında görünür. Kapı etkileşiminde psikolog hedefe vardıktan sonra kısa bir karşılama animasyonu oynar; danışan kapıya ilerler, kapı ışığı parlar ve ardından seans açılır. Personel ve geliştirme ekranları ofis mobilyalarından bağımsız, yüksek z-index'li opak yönetim katmanında gösterilir.
 
 Oyuncu avatarı için opsiyonel asset yolu `public/characters/therapist-avatar.png` dosyasıdır. Dosya bulunmadığında smart-casual görünümlü yerleşik SVG karakter otomatik kullanılır; uygulama eksik asset nedeniyle kırılmaz.
 
@@ -115,6 +117,7 @@ app/                 Next.js sayfa ve global stiller
 components/          Simülasyon ekranları ve arayüz bileşenleri
 components/PlayerAvatar.tsx Gezilebilir psikolog avatarı ve SVG fallback
 components/InteractionTargetMarker.tsx Zemin hedef halkası
+components/WaitingClientAvatar.tsx Bekleme alanındaki mini danışan avatarı
 data/cases.ts        Vaka, seçenek, atmosfer ve ek bilgi verileri
 data/characters.ts   Vaka-karakter eşlemeleri ve opsiyonel asset yolları
 data/upgrades.ts     Ofis geliştirmeleri ve kalıcı etkileri

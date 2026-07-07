@@ -9,7 +9,7 @@ export type OfficeScreen =
   | "upgradeShop"
   | "staff";
 
-export type OfficePanel = "schedule" | "fee" | "waiting" | "notes" | null;
+export type OfficePanel = "schedule" | "fee" | "waiting" | "notes" | "endDay" | null;
 
 export interface OfficeState {
   money: number;
