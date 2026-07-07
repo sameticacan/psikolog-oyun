@@ -11,7 +11,13 @@ Uygulama terapi hizmeti sunmaz ve kişiye özel psikolojik yönlendirme üretmez
 ## Özellikler
 
 - Çocuk, ergen ve genç yetişkin alanından 15 vakalık havuz ve 45 nüanslı yaklaşım seçeneği
-- Her başlangıçta karıştırılan 10 vakalık oturumlar; seçilen risk vakasının son iki sıraya güvenli biçimde yerleştirilmesi
+- Her oyun gününde ofis kapasitesine göre hazırlanan 2-4 danışanlık randevu kuyruğu
+- Tıklanabilir masa, kapı, bilgisayar, kitaplık, bekleme alanı ve resepsiyon bölgelerine sahip 2D ofis hub'ı
+- Seans geliri, itibar, etik güven, enerji, kira ve günlük giderlerden oluşan ofis ekonomisi
+- Seans ücreti ve itibara bağlı randevu talebi; 400, 600, 800 ve koşullu 1000 TL seçenekleri
+- Dört seviyeli asistan sistemi, randevu kapasitesi ve azalan no-show olasılığı
+- Ofis sahnesini de görsel olarak değiştiren altı kalıcı geliştirme
+- Gün sonu gelir/gider, itibar, etik güven ve enerji raporu
 - Güven, empati, etik duruş ve klinik uygunluk göstergeleri
 - Her seçimden sonra danışanla bağ ilerlemesi ve psikoeğitici açıklama
 - Bazı seçimlerde danışanın anlatısını genişleten ek bilgi kartları
@@ -42,6 +48,18 @@ Yeni görseller aynı dosya adlarıyla ilgili klasörlere kopyalandığında kod
 Arka plan ve karakter görsellerinin içine başlık, buton veya Türkçe metin gömülmemelidir. Tüm kullanıcı arayüzü metinleri okunabilirlik ve erişilebilirlik için HTML/CSS katmanında oluşturulur.
 
 Oyun ekranı tek viewport düzenindedir; ana sayfa scrollbar’ı kapatılmıştır. Uzun vaka ve geri bildirim içerikleri gerektiğinde yalnızca ilgili cam panelin içinde sınırlı olarak kayar.
+
+## Ofis yönetimi oyun döngüsü
+
+Oyuncu güne ofis hub'ında başlar. Kapıdan veya takvimden sıradaki danışanı kabul eder; mevcut visual novel vaka ekranında bir yaklaşım seçer ve geri bildirimi okur. Tek vaka bir seansı temsil eder. Seans sonunda ödeme, itibar, etik güven ve 18 enerji kaybı işlenir; ardından oyuncu ofise döner.
+
+Bir günde en fazla 2-4 randevu üretilir. Asistan ve geliştirilmiş bekleme alanı kapasiteyi artırırken yüksek ücret/düşük itibar birleşimi talebi azaltabilir. Enerji 18'in altına düştüğünde yeni seans başlatılmaz ve dinlenme sınırı önerilir. Oyuncu günü istediği zaman kapatabilir; günlük asistan gideri ve her beşinci gündeki kira ödemesi rapora yansır.
+
+Asistan 2.500 TL işe alım ve 350 TL günlük giderle çalışır. İlk seviyede günlük kapasiteyi artırır; sonraki seviyeler no-show ihtimalini azaltır, ön bilgilendirme ve raporlama akışını geliştirir. Asistan idari destek sunar; klinik kararların veya danışan güvenliğinin yerini almaz.
+
+Ofis ilerlemesi `terapi-odasi-office-state` localStorage anahtarında saklanır. Para, itibar, etik güven, enerji, gün, ücret, personel, ofis seviyesi, satın alınan geliştirmeler ve tamamlanma sayıları sayfa yenilendiğinde korunur.
+
+Risk vakaları ekonomik bonus olarak rastgele sunulmaz. Nadir ve öngörülebilir bir güvenlik olayı olarak kuyruğun sonunda yer alır; sonuç ekranı ekonomik sonuçtan önce güvenlik planını ve etik sorumluluğu vurgular.
 
 ## Kurulum
 
@@ -86,11 +104,16 @@ app/                 Next.js sayfa ve global stiller
 components/          Simülasyon ekranları ve arayüz bileşenleri
 data/cases.ts        Vaka, seçenek, atmosfer ve ek bilgi verileri
 data/characters.ts   Vaka-karakter eşlemeleri ve opsiyonel asset yolları
+data/upgrades.ts     Ofis geliştirmeleri ve kalıcı etkileri
+data/staff.ts        Asistan seviyeleri ve maliyetleri
 lib/results.ts       Puan, rozet, bağ ve final değerlendirme hesapları
 lib/session.ts       Oturum karıştırma ve risk vakası konumlandırması
+lib/economy.ts       Seans sonucu, talep, kapasite ve geliştirme hesapları
+lib/officeStorage.ts Ofis state'i için güvenli localStorage katmanı
 public/backgrounds/  Opsiyonel klinik arka planları
 public/characters/   Opsiyonel 2D danışan sprite’ları
 types/simulator.ts   Ortak TypeScript tipleri
+types/office.ts      Ofis, gün, ekonomi ve randevu tipleri
 ```
 
 Yeni vakalar `data/cases.ts` içindeki veri modeli izlenerek eklenebilir. İçerik yazılırken yargılayıcı, kesinlik bildiren veya riskli davranışı ayrıntılandıran dilden kaçınılmalıdır.

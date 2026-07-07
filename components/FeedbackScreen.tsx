@@ -14,9 +14,10 @@ interface FeedbackScreenProps {
   total: number;
   isLast: boolean;
   onNext: () => void;
+  nextLabel?: string;
 }
 
-export function FeedbackScreen({ caseStudy, choice, metrics, current, total, isLast, onNext }: FeedbackScreenProps) {
+export function FeedbackScreen({ caseStudy, choice, metrics, current, total, isLast, onNext, nextLabel }: FeedbackScreenProps) {
   const positive = Object.values(choice.impact).reduce((sum, value) => sum + value, 0) > 0;
   const connectionUpdate = getConnectionUpdate(choice);
   const reactionEmotion: CharacterEmotion = positive ? "hopeful" : "guarded";
@@ -67,7 +68,7 @@ export function FeedbackScreen({ caseStudy, choice, metrics, current, total, isL
           </div>
 
           <button className="game-next-button mt-5 w-full sm:ml-auto sm:w-auto" onClick={onNext}>
-            {isLast ? "Seans Değerlendirmesini Gör" : "Sonraki Vakaya Geç"}<span aria-hidden="true">→</span>
+            {nextLabel ?? (isLast ? "Seans Değerlendirmesini Gör" : "Sonraki Vakaya Geç")}<span aria-hidden="true">→</span>
           </button>
         </section>
       </div>
