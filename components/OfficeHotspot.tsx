@@ -1,20 +1,27 @@
-import type { ReactNode } from "react";
+import type { OfficeInteractionTarget } from "@/types/player";
 
 interface OfficeHotspotProps {
-  label: string;
-  hint: string;
-  className: string;
-  icon: ReactNode;
-  onClick: () => void;
-  disabled?: boolean;
+  target: OfficeInteractionTarget;
+  onInteract: (target: OfficeInteractionTarget) => void;
+  onHoverChange?: (hovered: boolean) => void;
+  queued?: boolean;
 }
 
-export function OfficeHotspot({ label, hint, className, icon, onClick, disabled }: OfficeHotspotProps) {
+export function OfficeHotspot({ target, onInteract, onHoverChange, queued }: OfficeHotspotProps) {
   return (
-    <button className={`office-hotspot ${className}`} onClick={onClick} disabled={disabled} aria-label={`${label}: ${hint}`}>
-      <span className="office-hotspot-ring">{icon}</span>
-      <span className="office-hotspot-label"><strong>{label}</strong><small>{hint}</small></span>
+    <button
+      className={`office-hotspot ${target.className} ${queued ? "is-queued" : ""}`}
+      onClick={() => onInteract(target)}
+      onMouseEnter={() => onHoverChange?.(true)}
+      onMouseLeave={() => onHoverChange?.(false)}
+      onFocus={() => onHoverChange?.(true)}
+      onBlur={() => onHoverChange?.(false)}
+      disabled={target.disabled}
+      aria-label={`${target.label}: ${target.hint}`}
+      aria-pressed={queued}
+    >
+      <span className="office-hotspot-ring">{target.icon}</span>
+      <span className="office-hotspot-label"><strong>{target.label}</strong><small>{target.hint}</small></span>
     </button>
   );
 }
-

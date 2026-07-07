@@ -70,9 +70,31 @@ async function inspect(name, width, height, port) {
     const screenshotPath = join(tmpdir(), `terapi-odasi-${name}.png`);
     writeFileSync(screenshotPath, Buffer.from(screenshot.data, "base64"));
 
+    const initialPlayer = await send("Runtime.evaluate", { returnByValue: true, expression: `(() => { const player = document.querySelector('.player-avatar'); return { x: Number(player?.dataset.playerX), y: Number(player?.dataset.playerY) }; })()` });
+    await send("Runtime.evaluate", { expression: `document.querySelector('.hotspot-computer')?.click()` });
+    await delay(90);
+    const movementStarted = await send("Runtime.evaluate", { returnByValue: true, expression: `document.querySelector('.player-avatar')?.dataset.playerWalking === 'true' && !document.querySelector('.office-modal')` });
+    await delay(750);
+    const scheduleOpened = await send("Runtime.evaluate", { returnByValue: true, expression: `Boolean(document.querySelector('.office-board'))` });
+    const positionBeforeLockedKey = await send("Runtime.evaluate", { returnByValue: true, expression: `document.querySelector('.player-avatar')?.dataset.playerX` });
+    await send("Runtime.evaluate", { expression: `window.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }))` });
+    await send("Runtime.evaluate", { expression: `document.querySelector('.hotspot-library')?.click()` });
+    await delay(220);
+    const positionAfterLockedKey = await send("Runtime.evaluate", { returnByValue: true, expression: `document.querySelector('.player-avatar')?.dataset.playerX` });
+    const modalBlockedHotspot = await send("Runtime.evaluate", { returnByValue: true, expression: `Boolean(document.querySelector('.office-board')) && !document.querySelector('.management-screen')` });
+    await send("Runtime.evaluate", { expression: `document.querySelector('.office-board .office-panel-heading button')?.click()` });
+    await delay(100);
+    await send("Runtime.evaluate", { expression: `window.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }))` });
+    await delay(220);
+    const positionAfterUnlockedKey = await send("Runtime.evaluate", { returnByValue: true, expression: `document.querySelector('.player-avatar')?.dataset.playerX` });
+    const positionBeforeTap = await send("Runtime.evaluate", { returnByValue: true, expression: `document.querySelector('.player-avatar')?.dataset.playerX` });
+    await send("Runtime.evaluate", { expression: `(() => { const room = document.querySelector('.office-room'); const rect = room.getBoundingClientRect(); room.dispatchEvent(new PointerEvent('pointerdown', { clientX: rect.left + rect.width * .31, clientY: rect.top + rect.height * .82, button: 0, bubbles: true, pointerType: 'touch' })); })()` });
+    await delay(220);
+    const positionAfterTap = await send("Runtime.evaluate", { returnByValue: true, expression: `document.querySelector('.player-avatar')?.dataset.playerX` });
+
     for (let attempt = 0; attempt < 4; attempt += 1) {
-      await send("Runtime.evaluate", { expression: `Array.from(document.querySelectorAll('button')).find((button) => button.textContent.includes('Seansı başlat') && !button.disabled)?.click()` });
-      await delay(180);
+      await send("Runtime.evaluate", { expression: `Array.from(document.querySelectorAll('button')).find((button) => button.textContent.includes('Kapıya git') && !button.disabled)?.click()` });
+      await delay(1150);
       const sessionCheck = await send("Runtime.evaluate", { returnByValue: true, expression: `Boolean(document.querySelector('.vn-choice'))` });
       if (sessionCheck.result.value) break;
     }
@@ -98,17 +120,18 @@ async function inspect(name, width, height, port) {
       expression: `(() => { const office = document.querySelector('.office-game-screen'); return { queueAfterReload: office?.dataset.queueSignature || '', queueDayAfterReload: Number(office?.dataset.queueDay || 0) }; })()`,
     });
     socket.close();
-    return { name, ...JSON.parse(evaluated.result.value), flow: { session: session.result.value, feedback: feedback.result.value, final: final.result.value, ...persisted.result.value, ...restoredQueue.result.value }, screenshotPath };
+    return { name, ...JSON.parse(evaluated.result.value), movement: { initial: initialPlayer.result.value, startedBeforeAction: movementStarted.result.value, scheduleOpenedAfterArrival: scheduleOpened.result.value, modalLockedKeyboard: positionBeforeLockedKey.result.value === positionAfterLockedKey.result.value, modalBlockedHotspot: modalBlockedHotspot.result.value, keyboardMovedAfterClose: Number(positionAfterUnlockedKey.result.value) > Number(positionAfterLockedKey.result.value), sceneTapMoved: positionBeforeTap.result.value !== positionAfterTap.result.value }, flow: { session: session.result.value, feedback: feedback.result.value, final: final.result.value, ...persisted.result.value, ...restoredQueue.result.value }, screenshotPath };
   } finally {
     browser.kill();
   }
 }
 
 const results = [];
-results.push(await inspect("desktop", 1440, 900, 9331));
-results.push(await inspect("mobile", 390, 844, 9332));
+results.push(await inspect("desktop-1366", 1366, 768, 9331));
+results.push(await inspect("desktop-1920", 1920, 1080, 9332));
+results.push(await inspect("mobile", 390, 844, 9333));
 console.log(JSON.stringify(results, null, 2));
 
-if (results.some((result) => result.horizontalOverflow || !result.officeVisible || result.hotspotCount !== 6 || !result.flow.session || !result.flow.feedback || !result.flow.final || !result.flow.officeReturned || result.flow.totalSessions !== 1 || result.flow.storageVersion !== 2 || result.flow.queueBeforeReload !== result.flow.queueAfterReload || result.flow.queueDayAfterReload !== 1)) {
+if (results.some((result) => result.horizontalOverflow || !result.officeVisible || result.hotspotCount !== 6 || !result.movement.startedBeforeAction || !result.movement.scheduleOpenedAfterArrival || !result.movement.modalLockedKeyboard || !result.movement.modalBlockedHotspot || !result.movement.keyboardMovedAfterClose || !result.movement.sceneTapMoved || !result.flow.session || !result.flow.feedback || !result.flow.final || !result.flow.officeReturned || result.flow.totalSessions !== 1 || result.flow.storageVersion !== 2 || result.flow.queueBeforeReload !== result.flow.queueAfterReload || result.flow.queueDayAfterReload !== 1)) {
   process.exitCode = 1;
 }

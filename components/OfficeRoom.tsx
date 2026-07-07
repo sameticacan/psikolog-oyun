@@ -1,23 +1,40 @@
+"use client";
+
+import { useState } from "react";
+import { clampPlayerPosition, positionFromPoint } from "@/lib/playerMovement";
 import type { DailyClient, OfficeState } from "@/types/office";
+import type { OfficeInteractionTarget, PlayerFacing, PlayerPosition } from "@/types/player";
+import { InteractionTargetMarker } from "./InteractionTargetMarker";
 import { OfficeHotspot } from "./OfficeHotspot";
+import { PlayerAvatar } from "./PlayerAvatar";
 
 interface OfficeRoomProps {
   state: OfficeState;
   queue: DailyClient[];
-  onStartSession: () => void;
-  onOpenSchedule: () => void;
-  onOpenNotes: () => void;
-  onOpenUpgrades: () => void;
-  onOpenWaiting: () => void;
-  onOpenStaff: () => void;
+  interactionTargets: OfficeInteractionTarget[];
+  playerPosition: PlayerPosition;
+  targetPosition: PlayerPosition | null;
+  facing: PlayerFacing;
+  isWalking: boolean;
+  transitionMs: number;
+  pendingTargetId: OfficeInteractionTarget["id"] | null;
+  onMove: (position: PlayerPosition) => void;
+  onInteract: (target: OfficeInteractionTarget) => void;
 }
 
-export function OfficeRoom({ state, queue, onStartSession, onOpenSchedule, onOpenNotes, onOpenUpgrades, onOpenWaiting, onOpenStaff }: OfficeRoomProps) {
+export function OfficeRoom({ state, queue, interactionTargets, playerPosition, targetPosition, facing, isWalking, transitionMs, pendingTargetId, onMove, onInteract }: OfficeRoomProps) {
   const nextClient = queue.find((client) => client.status === "waiting");
   const has = (id: string) => state.purchasedUpgrades.includes(id);
+  const [hoveredTargetId, setHoveredTargetId] = useState<OfficeInteractionTarget["id"] | null>(null);
+  const hoveredTarget = interactionTargets.find((target) => target.id === hoveredTargetId);
+
+  const moveOnFloor = (event: React.PointerEvent<HTMLElement>) => {
+    if (event.button !== 0 || (event.target as HTMLElement).closest("button, [data-no-move]")) return;
+    onMove(positionFromPoint(event.clientX, event.clientY, event.currentTarget.getBoundingClientRect()));
+  };
 
   return (
-    <section className="office-room" aria-label="Etkileşimli psikolog ofisi">
+    <section className="office-room" aria-label="Gezilebilir psikolog ofisi. Hareket etmek için zemine tıklayın veya ok ve WASD tuşlarını kullanın." onPointerDown={moveOnFloor}>
       <div className="office-ceiling-light"><i /></div>
       <div className="office-room-wall">
         <div className="office-window"><i /><i /><i /><i /><span className="window-reflection" /></div>
@@ -41,12 +58,12 @@ export function OfficeRoom({ state, queue, onStartSession, onOpenSchedule, onOpe
       <div className="office-door"><i className="door-panel" /><span>{nextClient ? "DANIŞAN BEKLİYOR" : "BUGÜN TAMAM"}</span></div>
       <div className="office-floor-light" /><div className="office-vignette" />
 
-      <OfficeHotspot className="hotspot-door" label="Kapı" hint={nextClient ? "Sıradaki danışanı al" : "Bekleyen danışan yok"} icon="↳" onClick={onStartSession} disabled={!nextClient} />
-      <OfficeHotspot className="hotspot-computer" label="Bilgisayar" hint="Randevu takvimi" icon="▣" onClick={onOpenSchedule} />
-      <OfficeHotspot className="hotspot-desk" label="Masa" hint="Notlar ve gün raporu" icon="≡" onClick={onOpenNotes} />
-      <OfficeHotspot className="hotspot-library" label="Kitaplık" hint="Ofis geliştirmeleri" icon="▤" onClick={onOpenUpgrades} />
-      <OfficeHotspot className="hotspot-waiting" label="Bekleme alanı" hint="Danışan listesi" icon="◫" onClick={onOpenWaiting} />
-      <OfficeHotspot className="hotspot-reception" label="Resepsiyon" hint="Asistan yönetimi" icon="♙" onClick={onOpenStaff} />
+      {hoveredTarget && !targetPosition && <InteractionTargetMarker position={clampPlayerPosition(hoveredTarget.position)} label={hoveredTarget.label} />}
+      {targetPosition && <InteractionTargetMarker position={targetPosition} active label={interactionTargets.find((target) => target.id === pendingTargetId)?.label} />}
+      <PlayerAvatar position={playerPosition} facing={facing} isWalking={isWalking} transitionMs={transitionMs} />
+      {interactionTargets.map((target) => (
+        <OfficeHotspot key={target.id} target={target} onInteract={onInteract} queued={pendingTargetId === target.id} onHoverChange={(hovered) => setHoveredTargetId(hovered ? target.id : null)} />
+      ))}
     </section>
   );
 }

@@ -39,6 +39,7 @@ public/characters/client-teen-anxious.png
 public/characters/client-young-adult-tired.png
 public/characters/client-child-worried.png
 public/characters/client-parent-stressed.png
+public/characters/therapist-avatar.png
 ```
 
 Bu dosyalar zorunlu değildir. Klinik arka planı bulunamazsa CSS ile oluşturulan pencere, gece şehir ışıkları, kitaplık, lamba, bitki, koltuk ve sehpa sahnesi görünür. Karakter PNG’si yüklenemezse vaka yaş grubu ile duygu durumuna göre renklendirilen yarım vücut SVG portresi otomatik devreye girer.
@@ -48,6 +49,14 @@ Yeni görseller aynı dosya adlarıyla ilgili klasörlere kopyalandığında kod
 Arka plan ve karakter görsellerinin içine başlık, buton veya Türkçe metin gömülmemelidir. Tüm kullanıcı arayüzü metinleri okunabilirlik ve erişilebilirlik için HTML/CSS katmanında oluşturulur.
 
 Oyun ekranı tek viewport düzenindedir; ana sayfa scrollbar’ı kapatılmıştır. Uzun vaka ve geri bildirim içerikleri gerektiğinde yalnızca ilgili cam panelin içinde sınırlı olarak kayar.
+
+## Gezilebilir ofis hub'ı
+
+Ofis sahnesinde zemine tıklayarak veya mobilde dokunarak psikolog avatarını hedef noktaya yürütebilirsiniz. Masaüstünde `WASD` ve ok tuşları da desteklenir. Hareket alanı ofis zeminiyle sınırlandırılır; avatar mobilyaların önünden ve arkasından geçerken zemin konumuna göre katmanlanır.
+
+Kapı, bilgisayar, masa, kitaplık, bekleme alanı ve resepsiyon artık menüyü doğrudan açmaz. Avatar hedef halkasına yürür ve aksiyon varıştan sonra çalışır. Hedef yakındaysa etkileşim anında gerçekleşir. Modal veya panel açıkken hareket ve yeni hotspot aksiyonları kilitlenir.
+
+Oyuncu avatarı için opsiyonel asset yolu `public/characters/therapist-avatar.png` dosyasıdır. Dosya bulunmadığında smart-casual görünümlü yerleşik SVG karakter otomatik kullanılır; uygulama eksik asset nedeniyle kırılmaz.
 
 ## Ofis yönetimi oyun döngüsü
 
@@ -104,6 +113,8 @@ npm run lint
 ```text
 app/                 Next.js sayfa ve global stiller
 components/          Simülasyon ekranları ve arayüz bileşenleri
+components/PlayerAvatar.tsx Gezilebilir psikolog avatarı ve SVG fallback
+components/InteractionTargetMarker.tsx Zemin hedef halkası
 data/cases.ts        Vaka, seçenek, atmosfer ve ek bilgi verileri
 data/characters.ts   Vaka-karakter eşlemeleri ve opsiyonel asset yolları
 data/upgrades.ts     Ofis geliştirmeleri ve kalıcı etkileri
@@ -112,10 +123,12 @@ lib/results.ts       Puan, rozet, bağ ve final değerlendirme hesapları
 lib/session.ts       Oturum karıştırma ve risk vakası konumlandırması
 lib/economy.ts       Seans sonucu, talep, kapasite ve geliştirme hesapları
 lib/officeStorage.ts Ofis state'i için güvenli localStorage katmanı
+lib/playerMovement.ts Koordinat, sınır ve klavye hareket yardımcıları
 public/backgrounds/  Opsiyonel klinik arka planları
 public/characters/   Opsiyonel 2D danışan sprite’ları
 types/simulator.ts   Ortak TypeScript tipleri
 types/office.ts      Ofis, gün, ekonomi ve randevu tipleri
+types/player.ts      Avatar ve etkileşim hedefi tipleri
 ```
 
 Yeni vakalar `data/cases.ts` içindeki veri modeli izlenerek eklenebilir. İçerik yazılırken yargılayıcı, kesinlik bildiren veya riskli davranışı ayrıntılandıran dilden kaçınılmalıdır.
