@@ -33,6 +33,11 @@ export interface DailyClient {
   status: "waiting" | "completed" | "no-show";
 }
 
+export interface StoredDailyClient {
+  caseId: number;
+  status: DailyClient["status"];
+}
+
 export interface DayLedger {
   grossIncome: number;
   expenses: number;
@@ -40,6 +45,14 @@ export interface DayLedger {
   ethicalTrustChange: number;
   sessions: number;
   noShows: number;
+}
+
+export interface OfficeStorageSnapshot {
+  version: 2;
+  state: OfficeState;
+  queueDay: number;
+  dailyQueue: StoredDailyClient[];
+  ledger: DayLedger;
 }
 
 export interface SessionOutcome {
@@ -56,4 +69,3 @@ export interface ActiveSession {
   clientIndex: number;
   metrics: Metrics;
 }
-

@@ -35,20 +35,21 @@ export function calculateSessionOutcome(choice: Choice, state: OfficeState, risk
     ethicalTrustChange = 3;
   } else if (score >= 60) {
     reputationChange = 2;
+    ethicalTrustChange = 1;
   } else if (score >= 40) {
-    income = Math.round(state.sessionFee * 0.7);
-    ethicalTrustChange = -2;
+    income = Math.round(state.sessionFee * 0.8);
+    ethicalTrustChange = -1;
   } else {
-    income = Math.round(state.sessionFee * 0.4);
-    reputationChange = -3;
-    ethicalTrustChange = -5;
+    income = Math.round(state.sessionFee * 0.55);
+    reputationChange = -2;
+    ethicalTrustChange = -4;
   }
 
   const ethicalConcern = choice.impact.ethics < 0;
   if (ethicalConcern) {
     ethicalTrustChange -= risk ? 5 : 2;
     reputationChange -= risk ? 2 : 1;
-    income = Math.min(income, Math.round(state.sessionFee * 0.7));
+    income = Math.min(income, Math.round(state.sessionFee * 0.75));
   }
 
   const bonuses = getUpgradeBonuses(state.purchasedUpgrades);
@@ -75,11 +76,11 @@ export function getDemandCapacity(state: OfficeState) {
   const upgradeCapacity = getUpgradeBonuses(state.purchasedUpgrades).capacity;
   const assistantCapacity = state.assistantHired ? 1 : 0;
   let demandPenalty = 0;
-  if (state.sessionFee === 800 && state.reputation < 35) demandPenalty = 1;
-  if (state.sessionFee === 1000 && (state.reputation < 60 || state.ethicalTrust < 60)) demandPenalty = 2;
+  if (state.sessionFee === 800 && state.reputation < 30) demandPenalty = 1;
+  if (state.sessionFee === 1000 && (state.reputation < 55 || state.ethicalTrust < 55)) demandPenalty = 1;
   return Math.max(2, 3 + assistantCapacity + upgradeCapacity - demandPenalty);
 }
 
 export function canUseFee(fee: OfficeState["sessionFee"], state: OfficeState) {
-  return fee !== 1000 || (state.reputation >= 60 && state.ethicalTrust >= 60);
+  return fee !== 1000 || (state.reputation >= 55 && state.ethicalTrust >= 55);
 }

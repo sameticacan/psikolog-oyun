@@ -55,9 +55,11 @@ Oyuncu güne ofis hub'ında başlar. Kapıdan veya takvimden sıradaki danışan
 
 Bir günde en fazla 2-4 randevu üretilir. Asistan ve geliştirilmiş bekleme alanı kapasiteyi artırırken yüksek ücret/düşük itibar birleşimi talebi azaltabilir. Enerji 18'in altına düştüğünde yeni seans başlatılmaz ve dinlenme sınırı önerilir. Oyuncu günü istediği zaman kapatabilir; günlük asistan gideri ve her beşinci gündeki kira ödemesi rapora yansır.
 
-Asistan 2.500 TL işe alım ve 350 TL günlük giderle çalışır. İlk seviyede günlük kapasiteyi artırır; sonraki seviyeler no-show ihtimalini azaltır, ön bilgilendirme ve raporlama akışını geliştirir. Asistan idari destek sunar; klinik kararların veya danışan güvenliğinin yerini almaz.
+Asistan 2.300 TL işe alım ve 300 TL günlük giderle çalışır. İlk seviyede günlük kapasiteyi artırır; sonraki seviyeler no-show ihtimalini azaltır, ön bilgilendirme ve raporlama akışını geliştirir. Asistan idari destek sunar; klinik kararların veya danışan güvenliğinin yerini almaz.
 
-Ofis ilerlemesi `terapi-odasi-office-state` localStorage anahtarında saklanır. Para, itibar, etik güven, enerji, gün, ücret, personel, ofis seviyesi, satın alınan geliştirmeler ve tamamlanma sayıları sayfa yenilendiğinde korunur.
+Ofis ilerlemesi `terapi-odasi-office-state` localStorage anahtarında sürümlü bir snapshot olarak saklanır. Para, itibar, etik güven, enerji, gün, ücret, personel, ofis seviyesi, satın alınan geliştirmeler, günün gelir/gider defteri ve danışan kuyruğunun sırası/durumları sayfa yenilendiğinde korunur. Yeni gün başlatılana kadar aynı danışanlar yeniden üretilmez.
+
+Ekonomi eğrisi erken oyunda daha yumuşaktır: düşük puanlı seanslarda finansal kesinti azaltılmış, orta sonuçlara küçük etik güven artışı eklenmiş ve başlangıç kira gideri 800 TL'ye çekilmiştir. Etik ihlallerin itibar ve güven yaptırımları caydırıcı kalır.
 
 Risk vakaları ekonomik bonus olarak rastgele sunulmaz. Nadir ve öngörülebilir bir güvenlik olayı olarak kuyruğun sonunda yer alır; sonuç ekranı ekonomik sonuçtan önce güvenlik planını ve etik sorumluluğu vurgular.
 

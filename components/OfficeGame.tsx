@@ -5,10 +5,10 @@ import { ASSISTANT_DAILY_COST, ASSISTANT_HIRE_COST, assistantLevels } from "@/da
 import { officeUpgrades } from "@/data/upgrades";
 import { cases } from "@/data/cases";
 import { calculateSessionOutcome, clampStat, getDemandCapacity, getUpgradeBonuses } from "@/lib/economy";
-import { INITIAL_OFFICE_STATE, loadOfficeState, saveOfficeState } from "@/lib/officeStorage";
+import { EMPTY_DAY_LEDGER, INITIAL_OFFICE_STATE, loadOfficeSnapshot, saveOfficeSnapshot } from "@/lib/officeStorage";
 import { createSessionCases } from "@/lib/session";
 import type { Choice, Metrics } from "@/types/simulator";
-import type { DailyClient, DayLedger, OfficePanel, OfficeScreen, OfficeState, SessionOutcome } from "@/types/office";
+import type { DailyClient, DayLedger, OfficePanel, OfficeScreen, OfficeState, SessionOutcome, StoredDailyClient } from "@/types/office";
 import { AppHeader } from "./AppHeader";
 import { AssistantPanel } from "./AssistantPanel";
 import { CaseScreen } from "./CaseScreen";
@@ -19,7 +19,6 @@ import { OfficeHub } from "./OfficeHub";
 import { UpgradeShop } from "./UpgradeShop";
 
 const INITIAL_METRICS: Metrics = { trust: 50, empathy: 50, ethics: 50, clinical: 50 };
-const EMPTY_LEDGER: DayLedger = { grossIncome: 0, expenses: 0, reputationChange: 0, ethicalTrustChange: 0, sessions: 0, noShows: 0 };
 
 function createDailyQueue(state: OfficeState): DailyClient[] {
   const capacity = Math.min(4, getDemandCapacity(state));
@@ -31,11 +30,21 @@ function createDailyQueue(state: OfficeState): DailyClient[] {
   return selected.map((caseStudy, index) => ({ caseStudy, status: index < state.completedSessionsToday ? "completed" : "waiting" }));
 }
 
+function restoreDailyQueue(stored: StoredDailyClient[], queueDay: number, state: OfficeState): DailyClient[] | null {
+  if (queueDay !== state.day || stored.length < 2 || stored.length > 4) return null;
+  const restored = stored.flatMap((client) => {
+    const caseStudy = cases.find((item) => item.id === client.caseId);
+    return caseStudy ? [{ caseStudy, status: client.status }] : [];
+  });
+  if (restored.length !== stored.length || new Set(restored.map((client) => client.caseStudy.id)).size !== restored.length) return null;
+  return restored;
+}
+
 function noShowChance(state: OfficeState) {
-  if (!state.assistantHired) return 18;
-  if (state.assistantLevel >= 3) return 3;
-  if (state.assistantLevel >= 2) return 5;
-  return 10;
+  if (!state.assistantHired) return 14;
+  if (state.assistantLevel >= 3) return 2;
+  if (state.assistantLevel >= 2) return 4;
+  return 8;
 }
 
 export function OfficeGame() {
@@ -49,20 +58,21 @@ export function OfficeGame() {
   const [metrics, setMetrics] = useState<Metrics>(INITIAL_METRICS);
   const [selectedChoice, setSelectedChoice] = useState<Choice | null>(null);
   const [outcome, setOutcome] = useState<SessionOutcome | null>(null);
-  const [ledger, setLedger] = useState<DayLedger>(EMPTY_LEDGER);
-  const hydrated = useRef(false);
+  const [ledger, setLedger] = useState<DayLedger>(EMPTY_DAY_LEDGER);
+  const [storageReady, setStorageReady] = useState(false);
   const selectionLock = useRef(false);
 
   useEffect(() => {
-    const stored = loadOfficeState();
-    setState(stored);
-    setQueue(createDailyQueue(stored));
-    hydrated.current = true;
+    const stored = loadOfficeSnapshot();
+    setState(stored.state);
+    setQueue(restoreDailyQueue(stored.dailyQueue, stored.queueDay, stored.state) ?? createDailyQueue(stored.state));
+    setLedger(stored.queueDay === stored.state.day ? stored.ledger : EMPTY_DAY_LEDGER);
+    setStorageReady(true);
   }, []);
 
   useEffect(() => {
-    if (hydrated.current) saveOfficeState(state);
-  }, [state]);
+    if (storageReady) saveOfficeSnapshot(state, queue, ledger);
+  }, [ledger, queue, state, storageReady]);
 
   const activeClient = activeClientIndex === null ? null : queue[activeClientIndex];
 
@@ -119,7 +129,7 @@ export function OfficeGame() {
 
   const startNextDay = () => {
     const nextState = { ...state, day: state.day + 1, completedDays: state.completedDays + 1, completedSessionsToday: 0, energy: 100 };
-    setState(nextState); setQueue(createDailyQueue(nextState)); setLedger(EMPTY_LEDGER); setMessage(null); setScreen("office");
+    setState(nextState); setQueue(createDailyQueue(nextState)); setLedger(EMPTY_DAY_LEDGER); setMessage(null); setScreen("office");
   };
 
   const hireAssistant = () => {

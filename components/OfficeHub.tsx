@@ -20,7 +20,7 @@ interface OfficeHubProps {
 export function OfficeHub({ state, queue, panel, message, onPanel, onStartSession, onEndDay, onOpenUpgrades, onOpenStaff, onFeeChange }: OfficeHubProps) {
   const next = queue.find((client) => client.status === "waiting");
   const lowEnergy = state.energy < 18;
-  return <main className="office-game-screen">
+  return <main className="office-game-screen" data-queue-day={state.day} data-queue-signature={queue.map((client) => `${client.caseStudy.id}:${client.status}`).join("|")}>
     <OfficeHud state={state} />
     <div className="office-scene-wrap">
       <div className="office-scene-caption"><span className="live-dot" /><div><small>OFİS AÇIK</small><strong>{next ? `${next.caseStudy.characterName} bekleme alanında` : "Bugünün randevuları tamamlandı"}</strong></div></div>

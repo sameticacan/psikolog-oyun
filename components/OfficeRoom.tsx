@@ -18,16 +18,28 @@ export function OfficeRoom({ state, queue, onStartSession, onOpenSchedule, onOpe
 
   return (
     <section className="office-room" aria-label="Etkileşimli psikolog ofisi">
-      <div className="office-room-wall"><div className="office-window"><i /><i /><i /><i /></div><div className="office-clock">21:10</div></div>
+      <div className="office-ceiling-light"><i /></div>
+      <div className="office-room-wall">
+        <div className="office-window"><i /><i /><i /><i /><span className="window-reflection" /></div>
+        <div className="office-wall-art"><span><i /></span><span><i /></span></div>
+        <div className="office-clock">21:10</div>
+        <div className="office-baseboard" />
+      </div>
       <div className={`office-books ${has("library") ? "upgraded" : ""}`}><i /><i /><i /><i /><i /><i /></div>
-      <div className="office-desk"><div className="office-monitor"><span>RANDEVU<br /><b>{queue.filter((c) => c.status === "waiting").length} BEKLİYOR</b></span></div><div className="desk-lamp" /></div>
-      <div className={`client-chair ${has("comfort-chair") ? "upgraded" : ""}`} />
+      <div className="office-rug"><i /></div>
+      <div className="office-desk">
+        <div className="office-monitor"><span>RANDEVU<br /><b>{queue.filter((c) => c.status === "waiting").length} BEKLİYOR</b></span></div>
+        <div className="desk-lamp" /><div className="desk-notebook" /><div className="desk-mug" /><div className="desk-drawer"><i /><i /></div>
+      </div>
+      <div className={`client-chair ${has("comfort-chair") ? "upgraded" : ""}`}><i /></div>
       <div className={`waiting-seats ${has("waiting-area") ? "upgraded" : ""}`}><i /><i /></div>
+      <div className="office-side-table"><span /><i /></div>
+      {nextClient && <div className="waiting-client" aria-hidden="true"><i /><span /></div>}
       {has("plants") && <div className="office-scene-plant"><i /><i /><i /><b /></div>}
       {has("online-kit") && <div className="office-online-kit">●</div>}
       {has("soundproofing") && <div className="office-soundproof"><i /><i /><i /></div>}
-      <div className="office-door"><span>{nextClient ? "DANIŞAN BEKLİYOR" : "BUGÜN TAMAM"}</span></div>
-      <div className="office-floor-light" />
+      <div className="office-door"><i className="door-panel" /><span>{nextClient ? "DANIŞAN BEKLİYOR" : "BUGÜN TAMAM"}</span></div>
+      <div className="office-floor-light" /><div className="office-vignette" />
 
       <OfficeHotspot className="hotspot-door" label="Kapı" hint={nextClient ? "Sıradaki danışanı al" : "Bekleyen danışan yok"} icon="↳" onClick={onStartSession} disabled={!nextClient} />
       <OfficeHotspot className="hotspot-computer" label="Bilgisayar" hint="Randevu takvimi" icon="▣" onClick={onOpenSchedule} />
@@ -38,4 +50,3 @@ export function OfficeRoom({ state, queue, onStartSession, onOpenSchedule, onOpe
     </section>
   );
 }
-

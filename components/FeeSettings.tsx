@@ -5,7 +5,7 @@ const feeOptions = [
   { value: 400 as const, name: "Erişilebilir", note: "Daha yüksek randevu talebi" },
   { value: 600 as const, name: "Dengeli", note: "Gelir ve erişim dengesi" },
   { value: 800 as const, name: "Yüksek", note: "Düşük itibarda talep azalır" },
-  { value: 1000 as const, name: "Uzmanlık", note: "60 itibar ve etik güven gerekir" },
+  { value: 1000 as const, name: "Uzmanlık", note: "55 itibar ve etik güven gerekir" },
 ];
 
 export function FeeSettings({ state, onChange, onClose }: { state: OfficeState; onChange: (fee: OfficeState["sessionFee"]) => void; onClose: () => void }) {
